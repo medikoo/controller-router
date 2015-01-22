@@ -20,12 +20,15 @@ module.exports = function (t, a) {
 		eli: {
 			match: function (a1) {},
 			controller: function () {}
-		}
+		},
+		fiszka: { controller: function () {} }
 	};
 	a(t(conf), conf);
 	conf.marko = {};
 	a.throws(function () { t(conf); }, 'MISSING_CONTROLLER');
 	conf.marko.controller = function () {};
+	t(conf);
+	conf.marko.match = true;
 	a.throws(function () { t(conf); }, 'INVALID_MATCH');
 	conf.marko.match = function () {};
 	a.throws(function () { t(conf); }, 'INVALID_MATCH_LENGTH');
