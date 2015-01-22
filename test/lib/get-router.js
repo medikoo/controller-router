@@ -18,6 +18,7 @@ module.exports = function (t, a) {
 			},
 			controller: function () { called.push('elo/dwa:controller'); }
 		},
+		marko: { controller: function () { called.push('marko:controller'); } },
 		'elo/trzy': function () { called.push('elo/trzy'); },
 		'elo/dwa/filo': function () { called.push('elo/dwa/filo'); }
 	}, function (result) { return result || true; });
@@ -28,6 +29,10 @@ module.exports = function (t, a) {
 
 	a(router('miszka'), false);
 	a.deep(called, []);
+
+	a(router('marko'), true);
+	a.deep(called, ['marko:controller']);
+	clear.call(called);
 
 	a(router('bar/dwa'), obj);
 	a.deep(called, ['bar/dwa']);
