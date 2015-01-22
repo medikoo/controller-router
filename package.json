@@ -1,0 +1,28 @@
+{
+  "name": "controller-router",
+  "version": "0.0.0",
+  "description": "Generic path based router for registered controllers",
+  "author": "Mariusz Nowak <medyk@medikoo.com> (http://www.medikoo.com/)",
+  "keywords": [
+    "controller",
+    "router"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/medikoo/controller-router.git"
+  },
+  "dependencies": {
+    "es5-ext": "~0.10.5"
+  },
+  "devDependencies": {
+    "tad": "~0.2.1",
+    "xlint": "~0.2.1",
+    "xlint-jslint-medikoo": "~0.1.2"
+  },
+  "scripts": {
+    "lint": "node node_modules/xlint/bin/xlint --linter=node_modules/xlint-jslint-medikoo/index.js --no-cache --no-stream",
+    "lint-console": "node node_modules/xlint/bin/xlint --linter=node_modules/xlint-jslint-medikoo/index.js --watch",
+    "test": "node node_modules/tad/bin/tad"
+  },
+  "license": "MIT"
+}
