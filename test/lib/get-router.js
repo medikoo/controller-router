@@ -7,18 +7,22 @@ module.exports = function (t, a) {
 	var router = t({
 		foo: function () { called.push('foo'); },
 		'bar/dwa': function () { called.push('bar/dwa'); return obj; },
-		'elo/dwa': {
+		'elo/dwa': function () { called.push('elo/dwa'); },
+		'elo/dwa/*': {
 			match: function (a1) {
-				called.push('elo/dwa:match');
+				called.push('elo/dwa/*:match');
 				return a1 === 'foo';
 			},
-			match2: function (a1, a2) {
-				called.push('elo/dwa:match2');
+			controller: function () { called.push('elo/dwa/*:controller'); }
+		},
+		'elo/dwa/*/foo/*': {
+			match: function (a1, a2) {
+				called.push('elo/dwa/*/foo/*:match2');
 				return (a1 === 'foo') && (a2 === 'bar');
 			},
-			controller: function () { called.push('elo/dwa:controller'); }
+			controller: function () { called.push('elo/dwa/*/foo/*:controller'); }
 		},
-		marko: { controller: function () { called.push('marko:controller'); } },
+		marko: function () { called.push('marko'); },
 		'elo/trzy': function () { called.push('elo/trzy'); },
 		'elo/dwa/filo': function () { called.push('elo/dwa/filo'); }
 	}, function (result) { return result || true; });
@@ -31,35 +35,35 @@ module.exports = function (t, a) {
 	a.deep(called, []);
 
 	a(router('marko'), true);
-	a.deep(called, ['marko:controller']);
+	a.deep(called, ['marko']);
 	clear.call(called);
 
 	a(router('bar/dwa'), obj);
 	a.deep(called, ['bar/dwa']);
 	clear.call(called);
 
-	a(router('elo/dwa'), false);
-	a.deep(called, []);
+	a(router('elo/dwa'), true);
+	a.deep(called, ['elo/dwa']);
+	clear.call(called);
 
 	a(router('elo/dwa/marko'), false);
-	a.deep(called, ['elo/dwa:match']);
+	a.deep(called, ['elo/dwa/*:match']);
 	clear.call(called);
 
 	a(router('elo/dwa/foo'), true);
-	a.deep(called, ['elo/dwa:match', 'elo/dwa:controller']);
+	a.deep(called, ['elo/dwa/*:match', 'elo/dwa/*:controller']);
 	clear.call(called);
 
-	a(router('elo/dwa/foo/imka'), false);
-	a.deep(called, ['elo/dwa:match2']);
+	a(router('elo/dwa/foo/foo/ilo'), false);
+	a.deep(called, ['elo/dwa/*/foo/*:match2']);
 	clear.call(called);
 
-	a(router('elo/dwa/foo/bar'), true);
-	a.deep(called, ['elo/dwa:match2', 'elo/dwa:controller']);
+	a(router('elo/dwa/foo/foo/bar'), true);
+	a.deep(called, ['elo/dwa/*/foo/*:match2', 'elo/dwa/*/foo/*:controller']);
 	clear.call(called);
 
 	a(router('elo/dwa/abla/bar'), false);
-	a.deep(called, ['elo/dwa:match2']);
-	clear.call(called);
+	a.deep(called, []);
 
 	a(router('elo/dwa/foo/bar/miko'), false);
 	a.deep(called, []);
