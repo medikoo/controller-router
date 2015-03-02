@@ -8,21 +8,21 @@ module.exports = function (t, a) {
 		foo: function () { called.push('foo'); },
 		'bar/dwa': function () { called.push('bar/dwa'); return obj; },
 		'elo/dwa': function () { called.push('elo/dwa'); },
-		'elo/dwa/*': {
+		'elo/dwa/[a-z]+': {
 			match: function (a1) {
 				called.push('elo/dwa/*:match');
 				return a1 === 'foo';
 			},
 			controller: function () { called.push('elo/dwa/*:controller'); }
 		},
-		'elo/dwa/*/foo/*': {
+		'elo/dwa/[a-z]+/foo/[a-z]+': {
 			match: function (a1, a2) {
 				called.push('elo/dwa/*/foo/*:match2');
 				return (a1 === 'foo') && (a2 === 'bar');
 			},
 			controller: function () { called.push('elo/dwa/*/foo/*:controller'); }
 		},
-		marko: function () { called.push('marko'); },
+		marko: { controller: function () { called.push('marko'); } },
 		'elo/trzy': function () { called.push('elo/trzy'); },
 		'elo/dwa/filo': function () { called.push('elo/dwa/filo'); }
 	}, function (result) { return result || true; });

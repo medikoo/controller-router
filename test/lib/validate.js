@@ -7,11 +7,11 @@ module.exports = function (t, a) {
 	conf = {
 		foo: function () {},
 		'bar/dwa': function () {},
-		'elo/*': {
+		'elo/[a-z]+': {
 			match: function (a1) {},
 			controller: function () {}
 		},
-		'elo/*/bar/*': {
+		'elo/[a-z]+/bar/[0-9]+': {
 			match: function (a1, a2) {},
 			controller: function () {}
 		},
@@ -24,12 +24,12 @@ module.exports = function (t, a) {
 	a.throws(function () { t(conf); }, 'INVALID_CONTROLLER');
 	conf.marko = function () {};
 	t(conf);
-	conf['marko/*'] = {
+	conf['marko/[a-z]+'] = {
 		controller: function () {},
 		match: true
 	};
 	a.throws(function () { t(conf); }, 'INVALID_MATCH');
-	conf['marko/*'] = {
+	conf['marko/[a-z]+'] = {
 		controller: function () {},
 		match: function (a1) {}
 	};
