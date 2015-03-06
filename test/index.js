@@ -5,6 +5,7 @@ var clear = require('es5-ext/array/#/clear');
 module.exports = function (t, a) {
 	var called = [], obj = {};
 	var router = t({
+		'/': function () { called.push('root'); },
 		foo: function () { called.push('foo'); },
 		'bar/dwa': function () { called.push('bar/dwa'); return obj; },
 		'elo/dwa': function () { called.push('elo/dwa'); },
@@ -27,7 +28,11 @@ module.exports = function (t, a) {
 		'elo/dwa/filo': function () { called.push('elo/dwa/filo'); }
 	});
 
-	a(router('foo'), true);
+	a(router('/'), true);
+	a.deep(called, ['root']);
+	clear.call(called);
+
+	a(router('/foo/'), true);
 	a.deep(called, ['foo']);
 	clear.call(called);
 
