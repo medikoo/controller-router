@@ -3,8 +3,8 @@
 var clear = require('es5-ext/array/#/clear');
 
 module.exports = function (t, a) {
-	var called = [], obj = {};
-	var router = t({
+	var called = [], obj = {}, conf;
+	var router = t(conf = {
 		foo: function () { called.push('foo'); },
 		'bar/dwa': function () { called.push('bar/dwa'); return obj; },
 		'elo/dwa': function () { called.push('elo/dwa'); },
@@ -27,22 +27,22 @@ module.exports = function (t, a) {
 		'elo/dwa/filo': function () { called.push('elo/dwa/filo'); }
 	}, function (result) { return result || true; });
 
-	a(router('foo'), true);
+	a.deep(router('foo'), { conf: conf.foo, result: undefined });
 	a.deep(called, ['foo']);
 	clear.call(called);
 
 	a(router('miszka'), false);
 	a.deep(called, []);
 
-	a(router('marko'), true);
+	a.deep(router('marko'), { conf: conf.marko, result: undefined });
 	a.deep(called, ['marko']);
 	clear.call(called);
 
-	a(router('bar/dwa'), obj);
+	a.deep(router('bar/dwa'), { conf: conf['bar/dwa'], result: obj });
 	a.deep(called, ['bar/dwa']);
 	clear.call(called);
 
-	a(router('elo/dwa'), true);
+	a.deep(router('elo/dwa'), { conf: conf['elo/dwa'], result: undefined });
 	a.deep(called, ['elo/dwa']);
 	clear.call(called);
 
@@ -50,7 +50,7 @@ module.exports = function (t, a) {
 	a.deep(called, ['elo/dwa/*:match']);
 	clear.call(called);
 
-	a(router('elo/dwa/foo'), true);
+	a.deep(router('elo/dwa/foo'), { conf: conf['elo/dwa/[a-z]+'], result: undefined });
 	a.deep(called, ['elo/dwa/*:match', 'elo/dwa/*:controller']);
 	clear.call(called);
 
@@ -58,7 +58,8 @@ module.exports = function (t, a) {
 	a.deep(called, ['elo/dwa/*/foo/*:match2']);
 	clear.call(called);
 
-	a(router('elo/dwa/foo/foo/bar'), true);
+	a.deep(router('elo/dwa/foo/foo/bar'),
+		{ conf: conf['elo/dwa/[a-z]+/foo/[a-z]+'], result: undefined });
 	a.deep(called, ['elo/dwa/*/foo/*:match2', 'elo/dwa/*/foo/*:controller']);
 	clear.call(called);
 
@@ -68,11 +69,11 @@ module.exports = function (t, a) {
 	a(router('elo/dwa/foo/bar/miko'), false);
 	a.deep(called, []);
 
-	a(router('elo/dwa/filo'), true);
+	a.deep(router('elo/dwa/filo'), { conf: conf['elo/dwa/filo'], result: undefined });
 	a.deep(called, ['elo/dwa/filo']);
 	clear.call(called);
 
-	a(router('elo/trzy'), true);
+	a.deep(router('elo/trzy'), { conf: conf['elo/trzy'], result: undefined });
 	a.deep(called, ['elo/trzy']);
 	clear.call(called);
 };
