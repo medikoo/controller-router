@@ -12,6 +12,7 @@
     "url": "git://github.com/medikoo/controller-router.git"
   },
   "dependencies": {
+    "d": "~0.1.1",
     "es5-ext": "~0.10.5"
   },
   "devDependencies": {
