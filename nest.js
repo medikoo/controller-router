@@ -3,7 +3,7 @@
 var forEach          = require('es5-ext/object/for-each')
   , normalizeOptions = require('es5-ext/object/normalize-options')
   , callable         = require('es5-ext/object/valid-callable')
-  , stringifiable    = require('es5-ext/object/validate-stringifiable-value')
+  , validatePath     = require('./lib/validate-path')
   , tokenizePath     = require('./lib/tokenize-path')
   , validate         = require('./lib/validate')
 
@@ -11,7 +11,7 @@ var forEach          = require('es5-ext/object/for-each')
 
 module.exports = function (path, nestedRoutes/*, match*/) {
 	var routes = create(null), match, pathData;
-	path = stringifiable(path);
+	path = validatePath(path);
 	validate(nestedRoutes);
 	pathData = tokenizePath(path);
 	if (!pathData.direct) match = callable(arguments[2]);
