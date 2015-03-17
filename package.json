@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "d": "~0.1.1",
-    "es5-ext": "~0.10.5"
+    "es5-ext": "git://github.com/medikoo/es5-ext.git"
   },
   "devDependencies": {
     "tad": "~0.2.1",
