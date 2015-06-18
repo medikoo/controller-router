@@ -47,7 +47,7 @@ router('/lorem/0abc'); // "Lorem, 0abc!"
 
 ### API
 
-#### controller-router
+#### getRouter(routes)
 
 ```javascript
 var getRouter = require('controller-router');
@@ -128,6 +128,34 @@ If path key contains dynamic tokens, then `match` function is required, and conf
 ```
 
 Both `match` and `controller` are run in same _this_ context, which can be understood as route call event. For each route call, new context is created, it should be used as transport for values that we resolve at _match_ step, and want to access at _controller_ step.
+
+#### nestRoutes(path, routes[, match])
+
+```javascript
+ var nestRoutes = require('controller-router/nest');
+
+ var routes = {
+   bar: function barController() { ... }
+ };
+
+  var nestedAgainstFoo = nestRoutes('foo', routes);
+ console.log(nestedAgainstFoo);
+ // { 'foo/bar': fuction barController() { ... } }
+
+ var nestedAgainstUser = nestRoutes('user/[0-9][a-z0-9]{6}', routes, function (userId) {
+   this.user = resolveUser(userId);
+ });
+ console.log(nestedAgainsUser);
+ // { 'user/[0-9][a-z0-9]{6}/bar': {
+ //    match: function (userId) {...} ,
+ //    controller: function barController() { ... }
+ // } }
+```
+
+Returns new routes map, where each route is additionally nested against provided path.
+Provided nest path can contain regExp tokens, in such case also `match` function must be passed.
+
+It's useful, when we have configured routes, which in some special cases we want to use against some nested route.
 
 ## Tests [![Build Status](https://travis-ci.org/medikoo/controller-router.svg)](https://travis-ci.org/medikoo/controller-router)
 
