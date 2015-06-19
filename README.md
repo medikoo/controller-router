@@ -129,27 +129,33 @@ If path key contains dynamic tokens, then `match` function is required, and conf
 
 Both `match` and `controller` are run in same _this_ context, which can be understood as route call event. For each route call, new context is created, it should be used as transport for values that we resolve at _match_ step, and want to access at _controller_ step.
 
+###### Router return values
+
+`router(path)` function when invoked returns either `false` when no controller for given path was found, or in case of valid route, a result object which has two properties:
+- `conf` a route configuration for chosen path (as it's provided on routes object)
+- `result` a result value as returned by invoked controller
+
 #### nestRoutes(path, routes[, match])
 
 ```javascript
- var nestRoutes = require('controller-router/nest');
+var nestRoutes = require('controller-router/nest');
 
- var routes = {
-   bar: function barController() { ... }
- };
+var routes = {
+  bar: function barController() { ... }
+};
 
-  var nestedAgainstFoo = nestRoutes('foo', routes);
- console.log(nestedAgainstFoo);
- // { 'foo/bar': fuction barController() { ... } }
+var nestedAgainstFoo = nestRoutes('foo', routes);
+console.log(nestedAgainstFoo);
+// { 'foo/bar': fuction barController() { ... } }
 
- var nestedAgainstUser = nestRoutes('user/[0-9][a-z0-9]{6}', routes, function (userId) {
-   this.user = resolveUser(userId);
- });
- console.log(nestedAgainsUser);
- // { 'user/[0-9][a-z0-9]{6}/bar': {
- //    match: function (userId) {...} ,
- //    controller: function barController() { ... }
- // } }
+var nestedAgainstUser = nestRoutes('user/[0-9][a-z0-9]{6}', routes, function (userId) {
+  this.user = resolveUser(userId);
+});
+console.log(nestedAgainsUser);
+// { 'user/[0-9][a-z0-9]{6}/bar': {
+//    match: function (userId) {...} ,
+//    controller: function barController() { ... }
+// } }
 ```
 
 Returns new routes map, where each route is additionally nested against provided path.
