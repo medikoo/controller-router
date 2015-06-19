@@ -127,6 +127,8 @@ If path key contains dynamic tokens, then `match` function is required, and conf
 };
 ```
 
+###### Controller context event object
+
 Both `match` and `controller` are run in same _this_ context, which can be understood as route call event. For each route call, new context is created, it should be used as transport for values that we resolve at _match_ step, and want to access at _controller_ step.
 
 ###### Router return values
