@@ -59,7 +59,7 @@ var router = getRouter({
 router('/foo/bar'); // invoke controller for '/foo/bar' path
 ```
 
-Main module exports `getRouter(routes)` function, which accepts routes configuration (typical hash map), and returns `router(path)` function.
+Main module exports `getRouter(routes)` function, which accepts routes configuration (typical hash map), and returns `router` function.
 
 ##### Routes configuration
 
@@ -127,13 +127,21 @@ If path key contains dynamic tokens, then `match` function is required, and conf
 };
 ```
 
-###### Controller context event object
+###### Handling of `router` function
 
-Both `match` and `controller` are run in same _this_ context, which can be understood as route call event. For each route call, new context is created, it should be used as transport for values that we resolve at _match_ step, and want to access at _controller_ step.
+`router.call(routeEvent, path, ...controllerArguments)`
+
+Router function maybe invoked just with `path` argument as `router(path)`, but it can also be used to pass preprepared `routeEvent` or to pass some arguments to controllers.
+
+`routeEvent`, so context in which `router` function is invoked, will be used as a context for controller invocation. If `router` was called without a context, then internally created empty plain object is used for a `routeEvent`.
+
+`routeEvent` should be unique per each route call and it should be used as a transport for values that we resolve at _match_ step, and want to access at _controller_ step (both `match` and `controller` are run in this context).
+
+If we want to pass some values as arguments to controller they can be passed to `router` after _path_ argument. They won't however be provided to `match` function, as all it receives is tokens as resolved from url.
 
 ###### Router return values
 
-`router(path)` function when invoked returns either `false` when no controller for given path was found, or in case of valid route, a result object which has two properties:
+`router.call(routeEvent, path, ...controllerArgs)` function when invoked returns either `false` when no controller for given path was found, or in case of valid route a result object which has two properties:
 - `conf` a route configuration for chosen path (as it's provided on routes object)
 - `result` a result value as returned by invoked controller
 
