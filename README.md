@@ -150,9 +150,12 @@ router.call(overridenRouteEvent, path, ...controllerArguments);
 
 ###### Router return values
 
-`router.call(routeEvent, path, ...controllerArgs)` function when invoked returns either `false` when no controller for given path was found, or in case of valid route a result object which has two properties:
+`router` function when invoked returns either `false` when no controller for given path was found, or in case of valid route a result object which has two properties:
 - `conf` a route configuration for chosen path (as it's provided on routes object)
+- `event`, a `routeEvent` for given router call
 - `result` a result value as returned by invoked controller
+
+If controller function crashes, then `conf` and `event` objects, can be found on thrown error instance.
 
 #### nestRoutes(path, routes[, match])
 
