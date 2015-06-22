@@ -1,5 +1,5 @@
 # controller-router
-## Generic, path resolved controller router
+## URL -> controller router
 
 Basic example of router configuration:
 
