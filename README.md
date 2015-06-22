@@ -47,7 +47,7 @@ router('/lorem/0abc'); // "Lorem, 0abc!"
 
 ### API
 
-#### getRouter(routes)
+#### getRouter(routes[, options])
 
 ```javascript
 var getRouter = require('controller-router');
@@ -60,6 +60,10 @@ router('/foo/bar'); // invoke controller for '/foo/bar' path
 ```
 
 Main module exports `getRouter(routes)` function, which accepts routes configuration (typical hash map), and returns `router` function.
+
+Supported options:
+- __eventProto__ - Prototype for route events. If provided, then each `routeEvent` will be an instance that inherits from this object.
+For more information about `routeEvent`, see [Handling of router function](https://github.com/medikoo/controller-router#handling-of-router-function) section.
 
 ##### Routes configuration
 
@@ -129,15 +133,20 @@ If path key contains dynamic tokens, then `match` function is required, and conf
 
 ###### Handling of `router` function
 
-`router.call(routeEvent, path, ...controllerArguments)`
+`router(path[, ...controllerArguments])`
 
-Router function maybe invoked just with `path` argument as `router(path)`, but it can also be used to pass preprepared `routeEvent` or to pass some arguments to controllers.
+Router function when invoked with `path` argument, resolves controller for given path, and if one is found, it is invoked.  
+Additionally, when calling `router`, after a path argument, we can pass arguments for _controller_ function (mind that those arguments won't be provided to eventual _match_ function)
 
-`routeEvent`, so context in which `router` function is invoked, will be used as a context for controller invocation. If `router` was called without a context, then internally created empty plain object is used for a `routeEvent`.
+For each `router` call, a new `routeEvent` is created (as a plain object, or as an extension to provided at initialization `eventProto` object).
+It is used as a context for _match_ and _controller_ invocations, `routeEvent` should be used as a transport for values that we resolve at _match_ step, and want to access at _controller_ step.
 
-`routeEvent` should be unique per each route call and it should be used as a transport for values that we resolve at _match_ step, and want to access at _controller_ step (both `match` and `controller` are run in this context).
+If we call `route` function in a some context, then given context becomes a `routeEvent` object. That way we can override internal creation of `routeEvent` with object constructed externally.
 
-If we want to pass some values as arguments to controller they can be passed to `router` after _path_ argument. They won't however be provided to `match` function, as all it receives is tokens as resolved from url.
+```javascript
+// overridenRouteEvent becomes context for eventual match and controller invocations
+router.call(overridenRouteEvent, path, ...controllerArguments);
+```
 
 ###### Router return values
 
