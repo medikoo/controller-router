@@ -1,11 +1,12 @@
 {
   "name": "controller-router",
   "version": "1.0.0",
-  "description": "Generic path based router for registered controllers",
+  "description": "URL to controller, router",
   "author": "Mariusz Nowak <medyk@medikoo.com> (http://www.medikoo.com/)",
   "keywords": [
     "controller",
-    "router"
+    "router",
+    "url"
   ],
   "repository": {
     "type": "git",

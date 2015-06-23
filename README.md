@@ -1,5 +1,5 @@
 # controller-router
-## URL -> controller router
+## URL to controller, router
 
 Basic example of router configuration:
 
