@@ -150,12 +150,12 @@ router.call(overridenRouteEvent, path, ...controllerArguments);
 
 ###### Router return values
 
-`router` function when invoked returns either `false` when no controller for given path was found, or in case of valid route a result object which has two properties:
+`router` function when invoked returns either `false` when no controller for given path was found, or in case of a valid route, a result object with following properties is returned:
 - `conf` a route configuration for chosen path (as it's provided on routes object)
 - `event`, a `routeEvent` for given router call
 - `result` a result value as returned by invoked controller
 
-If controller function crashes, then `conf` and `event` objects, can be found on thrown error instance.
+If controller function crashes, then `conf` and `event` objects, can be found as properties on error instance.
 
 #### nestRoutes(path, routes[, match])
 
@@ -185,6 +185,13 @@ Provided nest path can contain regExp tokens, in such case also `match` function
 
 It's useful, when we have configured routes, which in some special cases we want to use against some nested route.
 
-## Tests [![Build Status](https://travis-ci.org/medikoo/controller-router.svg)](https://travis-ci.org/medikoo/controller-router)
+### Available Extensions
+
+__controller-router__ on its own is a generic utility and doesn't provide functionalities which you would need for certain use cases. Following is a list of extensions which address specific scenarios:
+
+- [post-controller-router](https://github.com/medikoo/post-controller-router#post-controller-router) -  Router dedicated for update requests (e.g. form submissions in browsers, or POST requests on server-side)
+- [site-tree-router](https://github.com/medikoo/site-tree-router#site-tree-router) - A view engine router (to switch between pages in response to url changes in address bar)
+
+### Tests [![Build Status](https://travis-ci.org/medikoo/controller-router.svg)](https://travis-ci.org/medikoo/controller-router)
 
 	$ npm test
