@@ -13,5 +13,5 @@ module.exports = function (t, a) {
 		matchPositionsLength: 3,
 		matchPositions: [1, 7, 9]
 	};
-	a.deep([conf1, conf2, conf3].sort(t), [conf2, conf3, conf1]);
+	a.deep([conf1, conf2, conf3].sort(t), [conf2, conf1, conf3]);
 };
