@@ -14,7 +14,7 @@ var includes             = require('es5-ext/array/#/contains')
   , compareDynamicRoutes = require('./lib/compare-dynamic-routes')
   , isDirect             = require('./lib/is-token-direct')
   , tokenizePath         = require('./lib/tokenize-path')
-  , validatePath         = require('./lib/validate-path')
+  , ensurePath           = require('./lib/ensure-path')
 
   , push = Array.prototype.push, slice = Array.prototype.slice, apply = Function.prototype.apply
   , create = Object.create, defineProperty = Object.defineProperty, stringify = JSON.stringify;
@@ -54,7 +54,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 		forEach(ensureObject(routes), function (conf, path) {
 			var isMatch;
 			ensureObject(conf);
-			validatePath(path);
+			ensurePath(path);
 			if (path !== '/') isMatch = !path.split('/').every(isDirect);
 			if (typeof conf === 'function') {
 				if (isMatch) {
