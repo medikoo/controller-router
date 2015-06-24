@@ -1,3 +1,5 @@
+// Generates new routes map, where provided routes are nested against extra url
+
 'use strict';
 
 var forEach          = require('es5-ext/object/for-each')
