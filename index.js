@@ -12,7 +12,7 @@ var includes             = require('es5-ext/array/#/contains')
   , d                    = require('d')
   , lazy                 = require('d/lazy')
   , compareDynamicRoutes = require('./lib/compare-dynamic-routes')
-  , isDirect             = require('./lib/is-token-direct')
+  , isStatic             = require('./lib/is-token-static')
   , tokenizePath         = require('./lib/tokenize-path')
   , ensurePath           = require('./lib/ensure-path')
 
@@ -55,7 +55,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 			var isMatch;
 			ensureObject(conf);
 			ensurePath(path);
-			if (path !== '/') isMatch = !path.split('/').every(isDirect);
+			if (path !== '/') isMatch = !path.split('/').every(isStatic);
 			if (typeof conf === 'function') {
 				if (isMatch) {
 					throw customError("Missing match function for " + stringify(path), 'MISSING_MATCH');
