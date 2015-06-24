@@ -36,7 +36,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	// Configure internal routes map
 	forEach(routes, function (conf, path) {
 		var pathData = tokenizePath(path);
-		if (pathData.direct) {
+		if (pathData.static) {
 			this._staticRoutes[path] = conf;
 			return;
 		}

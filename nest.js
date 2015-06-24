@@ -14,7 +14,7 @@ module.exports = function (path, nestedRoutes/*, match*/) {
 	var routes = create(null), match, pathData;
 	path = ensurePath(path);
 	pathData = tokenizePath(path);
-	if (!pathData.direct) match = callable(arguments[2]);
+	if (!pathData.static) match = callable(arguments[2]);
 	forEach(nestedRoutes, function (conf, nestedPath) {
 		var nestedMatch;
 		if (typeof conf === 'function') conf = { controller: conf };
