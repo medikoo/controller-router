@@ -4,6 +4,7 @@
 
 var includes             = require('es5-ext/array/#/contains')
   , customError          = require('es5-ext/error/custom')
+  , identity             = require('es5-ext/function/identity')
   , assign               = require('es5-ext/object/assign')
   , ensureObject         = require('es5-ext/object/valid-object')
   , ensureStringifiable  = require('es5-ext/object/validate-stringifiable-value')
@@ -23,8 +24,8 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	var options;
 	// Validate initialization
 	if (!(this instanceof ControllerRouter)) return new ControllerRouter(routes, arguments[1]);
-	this.constructor.ensureRoutes(routes);
 	options = Object(arguments[1]);
+	this.constructor.ensureRoutes(routes, options);
 
 	if (options.eventProto != null) {
 		// Override default event prototype
@@ -32,6 +33,9 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	}
 
 	defineProperty(this, 'routes', d(routes));
+
+	routes = this.constructor.resolveRoutes(routes, options);
+	routes = this.constructor.normalizeRoutes(routes, options);
 
 	// Configure internal routes map
 	forEach(routes, function (conf, path) {
@@ -77,7 +81,14 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 			}
 		});
 		return routes;
-	})
+	}),
+	// Resolves routes (e.g. fills in defaults)
+	// In scope of ControllerRouter it doesn't do anything, but may be useful for extensions
+	resolveRoutes: d(identity),
+	// Normalizes routes to bare ControllerRouter format. If ControllerRouter extension
+	// provides more sophisticated routes format, this should be a function which transforms it
+	// directly to map as understood by ControllerRouter
+	normalizeRoutes: d(identity)
 });
 
 Object.defineProperties(ControllerRouter.prototype, assign({
