@@ -4,10 +4,10 @@
 Basic example of router configuration:
 
 ```javascript
-var getRouter = require('controler-router');
+var ControllerRouter = require('controler-router');
 
 // Provide a routes and get router:
-var router = getRouter({
+var router = new ControllerRouter({
   // '/' route
   '/': function () {
     console.log("Root!");
@@ -33,12 +33,12 @@ var router = getRouter({
   }
 });
 
-router('/'); // Calls "/" controller (logs "Root!") and returns route call event object
-router('/foo/'); // "Foo!"
-router('/not-existing/'); // Not found, returns false
-router('/foo/bar/'); // "Foo, Bar!"
-router('/lorem/elo'); // Not found, returns false
-router('/lorem/0abc'); // "Lorem, 0abc!"
+router.route('/'); // Calls "/" controller (logs "Root!") and returns route call event object
+router.route('/foo/'); // "Foo!"
+router.route('/not-existing/'); // Not found, returns false
+router.route('/foo/bar/'); // "Foo, Bar!"
+router.route('/lorem/elo'); // Not found, returns false
+router.route('/lorem/0abc'); // "Lorem, 0abc!"
 ```
 
 ### Installation
@@ -46,30 +46,31 @@ router('/lorem/0abc'); // "Lorem, 0abc!"
 	$ npm install controller-router
 
 ### API
+#### ControllerRouter constructor properties
+##### ControllerRouter.ensureRoute(routes)
 
-#### getRouter(routes[, options])
+Validates provided routes configuration, it is also used internally on router initialization
+
+#### ControllerRouter initialization
+##### new ControllerRouter(routes[, options])
 
 ```javascript
-var getRouter = require('controller-router');
+var ControllerRouter = require('controller-router');
 
-var router = getRouter({
+var router = new ControllerRouter({
   // .. routes configuration
 });
-
-router('/foo/bar'); // invoke controller for '/foo/bar' path
 ```
 
-Main module exports `getRouter(routes)` function, which accepts routes configuration (typical hash map), and returns `router` function.
+ControllerRouter on initalizaton accepts [routes map](#routes-map-configuration), and eventual options:
+- __eventProto__ - Prototype for route events. If provided, then each event, will be an instance that inherits from this object.
+For more information about _event_ object, see [Handling of router function](https://github.com/medikoo/controller-router#handling-of-router-function) section.
 
-Supported options:
-- __eventProto__ - Prototype for route events. If provided, then each `routeEvent` will be an instance that inherits from this object.
-For more information about `routeEvent`, see [Handling of router function](https://github.com/medikoo/controller-router#handling-of-router-function) section.
-
-##### Routes configuration
+###### Routes map configuration
 
 In routes map, _key_ is a path, and _value_ is a controller. Routes are defined as flat map, there are no nested route configurations.
 
-###### Path keys
+####### Routes map: path keys
 
 A valid path key is a series of tokens separated with `/` character. Where a token for typical static path is built strictly out of `a-z, 0-9, -` characters set.
 
@@ -91,7 +92,7 @@ Examples of dynamic path keys:
 
 Routes for dynamic path keys, can be combined with static that override them. e.g. we may have configuration for _user/[a-z]{3,10}_ and _user/mark_, and `/user/mark` url will be routed to __user/mark__ configuration, as it has higher specifity for given path
 
-###### Controller values
+####### Routes map: controller values
 
 For static path keys, controllers may be direct functions e.g.:
 ```javascript
@@ -131,31 +132,26 @@ If path key contains dynamic tokens, then `match` function is required, and conf
 };
 ```
 
-###### Handling of `router` function
+`match` function would be invoked in same _event_ context as controller, and arguments it receives is resolved tokens from url which match all route regexp tokens.
 
-`router(path[, ...controllerArguments])`
+#### ControllerRouter instance properties
+##### controllerRouter.route(path[, ...controllerArgs])
 
-Router function when invoked with `path` argument, resolves controller for given path, and if one is found, it is invoked.  
-Additionally, when calling `router`, after a path argument, we can pass arguments for _controller_ function (mind that those arguments won't be provided to eventual _match_ function)
+Resolves controller for given path, and if one is found, it is invoked. Additionally after a path argument, we can pass arguments for _controller_ function (mind that those arguments won't be provided to eventual _match_ function)
 
-For each `router` call, a new `routeEvent` is created (as a plain object, or as an extension to provided at initialization `eventProto` object).
-It is used as a context for _match_ and _controller_ invocations, `routeEvent` should be used as a transport for values that we resolve at _match_ step, and want to access at _controller_ step.
+For each method call, a new _event_ is created (as a plain object, or as an extension to provided at initialization `eventProto` object).
+It is used as a context for _match_ and _controller_ invocations, _event_ object should be used as a transport for values that we resolve at _match_ step, and want to access at _controller_ step.
 
-If we call `route` function in a some context, then given context becomes a `routeEvent` object. That way we can override internal creation of `routeEvent` with object constructed externally.
-
-```javascript
-// overridenRouteEvent becomes context for eventual match and controller invocations
-router.call(overridenRouteEvent, path, ...controllerArguments);
-```
-
-###### Router return values
-
-`router` function when invoked returns either `false` when no controller for given path was found, or in case of a valid route, a result object with following properties is returned:
+`router` method when invoked returns either `false` when no controller for given path was found, or in case of a valid route, a result object with following properties is returned:
 - `conf` a route configuration for chosen path (as it's provided on routes object)
-- `event`, a `routeEvent` for given router call
+- `event`, an event for given router call
 - `result` a result value as returned by invoked controller
 
-If controller function crashes, then `conf` and `event` objects, can be found as properties on error instance.
+If internally invoked controller function crashes, then `conf` and `event` objects, can be found as properties on error instance.
+
+##### controllerRouter.routeEvent(event, path[, ...controllerArgs])
+
+With `routeEvent` method we can force specific _event_ (controller context) for given route call. Aside of that it behaves exactly as `route` method.
 
 #### nestRoutes(path, routes[, match])
 
