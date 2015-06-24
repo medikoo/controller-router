@@ -6,14 +6,14 @@ var forEach          = require('es5-ext/object/for-each')
   , normalizeOptions = require('es5-ext/object/normalize-options')
   , callable         = require('es5-ext/object/valid-callable')
   , ensurePath       = require('./lib/ensure-path')
-  , tokenizePath     = require('./lib/tokenize-path')
+  , resolvePathMeta  = require('./lib/resolve-path-meta')
 
   , slice = Array.prototype.slice, apply = Function.prototype.apply, create = Object.create;
 
 module.exports = function (path, nestedRoutes/*, match*/) {
 	var routes = create(null), match, pathData;
 	path = ensurePath(path);
-	pathData = tokenizePath(path);
+	pathData = resolvePathMeta(path);
 	if (!pathData.static) match = callable(arguments[2]);
 	forEach(nestedRoutes, function (conf, nestedPath) {
 		var nestedMatch;

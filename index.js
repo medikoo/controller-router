@@ -13,7 +13,7 @@ var includes             = require('es5-ext/array/#/contains')
   , lazy                 = require('d/lazy')
   , compareDynamicRoutes = require('./lib/compare-dynamic-routes')
   , isStatic             = require('./lib/is-token-static')
-  , tokenizePath         = require('./lib/tokenize-path')
+  , resolvePathMeta      = require('./lib/resolve-path-meta')
   , ensurePath           = require('./lib/ensure-path')
 
   , push = Array.prototype.push, slice = Array.prototype.slice, apply = Function.prototype.apply
@@ -35,7 +35,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 
 	// Configure internal routes map
 	forEach(routes, function (conf, path) {
-		var pathData = tokenizePath(path);
+		var pathData = resolvePathMeta(path);
 		if (pathData.static) {
 			this._staticRoutes[path] = conf;
 			return;
