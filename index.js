@@ -34,11 +34,8 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 
 	defineProperty(this, 'routes', d(routes));
 
-	routes = this.constructor.resolveRoutes(routes, options);
-	routes = this.constructor.normalizeRoutes(routes, options);
-
 	// Configure internal routes map
-	forEach(routes, function (conf, path) {
+	forEach(this.constructor.normalizeRoutes(routes, options), function (conf, path) {
 		var pathData = resolvePathMeta(path);
 		if (pathData.static) {
 			this._staticRoutes[path] = conf;
@@ -82,9 +79,6 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 		});
 		return routes;
 	}),
-	// Resolves routes (e.g. fills in defaults)
-	// In scope of ControllerRouter it doesn't do anything, but may be useful for extensions
-	resolveRoutes: d(identity),
 	// Normalizes routes to bare ControllerRouter format. If ControllerRouter extension
 	// provides more sophisticated routes format, this should be a function which transforms it
 	// directly to map as understood by ControllerRouter
