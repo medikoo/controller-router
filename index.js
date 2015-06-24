@@ -56,12 +56,12 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	// Validates provided routes map
 	ensureRoutes: d(function (routes) {
 		forEach(ensureObject(routes), function (conf, path) {
-			var isMatch;
+			var isDynamic;
 			ensureObject(conf);
 			ensurePath(path);
-			if (path !== '/') isMatch = !path.split('/').every(isStatic);
+			if (path !== '/') isDynamic = !path.split('/').every(isStatic);
 			if (typeof conf === 'function') {
-				if (isMatch) {
+				if (isDynamic) {
 					throw customError("Missing match function for " + stringify(path), 'MISSING_MATCH');
 				}
 				return;
@@ -70,12 +70,12 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 				throw customError("Invalid controller for " + stringify(path), 'INVALID_CONTROLLER');
 			}
 			if (typeof conf.match !== 'function') {
-				if (isMatch) {
+				if (isDynamic) {
 					throw customError("Invalid match function for " + stringify(path), 'INVALID_MATCH');
 				}
 				return;
 			}
-			if (!isMatch) {
+			if (!isDynamic) {
 				throw customError("Missing regular expression in path " + stringify(path),
 					'MISSING_PATH_REGEX');
 			}
