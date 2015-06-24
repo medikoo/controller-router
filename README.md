@@ -47,7 +47,7 @@ router.route('/lorem/0abc'); // "Lorem, 0abc!"
 
 ### API
 #### ControllerRouter constructor properties
-##### ControllerRouter.ensureRoute(routes)
+##### ControllerRouter.ensureRoutes(routes)
 
 Validates provided routes configuration, it is also used internally on router initialization
 
