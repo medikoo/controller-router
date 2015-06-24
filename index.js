@@ -89,7 +89,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	}),
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
-		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, controller, result;
+		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller, result;
 		ensureObject(event);
 		path = ensureStringifiable(path);
 		if (!path) return false;
@@ -98,6 +98,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		event.path = path || '/';
 		conf = this._staticRoutes[path || '/'];
 		if (conf) {
+			initConf = this.routes[path || '/'];
 			controller = conf.controller || conf;
 			try {
 				result = apply.call(controller, event, controllerArgs);
@@ -122,20 +123,23 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 					})) {
 					return false;
 				}
-				if (data.conf.match.apply(event, args)) conf = data.conf;
+				if (data.conf.match.apply(event, args)) {
+					conf = data.conf;
+					initConf = this.routes[data.path];
+				}
 				return true;
-			});
+			}, this);
 			if (!conf) return false;
 			try {
 				result = apply.call(conf.controller, event, controllerArgs);
 			} catch (e) {
-				e.conf = conf;
+				e.conf = initConf;
 				e.event = event;
 				throw e;
 			}
 		}
 		return {
-			conf: conf,
+			conf: initConf,
 			event: event,
 			result: result
 		};
