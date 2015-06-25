@@ -1,2 +1,9 @@
+v2.0.0  --  2015.06.25
+* Convert utility into more natural ControllerRouter class form
+* Improve specifity handling in dynamic routes resolution
+* Improve documentation
+* Rename internal modules to more corresponding names
+* Modularize configuration resolution, so it can be adapted by extensions
+
 v1.0.0  --  2015.06.23
 * Initial
