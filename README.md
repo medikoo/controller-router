@@ -6,7 +6,7 @@ Basic example of router configuration:
 ```javascript
 var ControllerRouter = require('controler-router');
 
-// Provide a routes and get router:
+// Provide routes and get a router:
 var router = new ControllerRouter({
   // '/' route
   '/': function () {
