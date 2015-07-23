@@ -108,7 +108,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			try {
 				result = apply.call(controller, event, controllerArgs);
 			} catch (e) {
-				e.conf = conf;
+				e.conf = initConf;
 				e.event = event;
 				throw e;
 			}
