@@ -12,6 +12,7 @@ var includes             = require('es5-ext/array/#/contains')
   , endsWith             = require('es5-ext/string/#/ends-with')
   , d                    = require('d')
   , lazy                 = require('d/lazy')
+  , isPromise            = require('is-promise')
   , compareDynamicRoutes = require('./lib/compare-dynamic-routes')
   , isStatic             = require('./lib/is-token-static')
   , resolvePathMeta      = require('./lib/resolve-path-meta')
@@ -94,7 +95,8 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	}),
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
-		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller;
+		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller
+		  , asyncResult;
 		ensureObject(event);
 		path = ensureStringifiable(path);
 		this.lastRouteData = { event: event };
@@ -113,7 +115,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		pathTokens = path.split('/');
 		if (!this._dynamicRoutes[pathTokens.length]) return false;
 		this._dynamicRoutes[pathTokens.length].some(function (data) {
-			var args = [];
+			var args = [], matchResult;
 			if (!data.tokens.every(function (token, index) {
 					var pathToken = pathTokens[index];
 					if (includes.call(data.matchPositions, index)) {
@@ -125,12 +127,23 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 				})) {
 				return false;
 			}
-			if (data.conf.match.apply(event, args)) {
+			matchResult = data.conf.match.apply(event, args);
+			if (isPromise(matchResult)) {
+				asyncResult = matchResult.then(function (isMatch) {
+					if (!isMatch) return false;
+					return (this.lastRouteData = {
+						event: event,
+						conf: this.routes[data.path],
+						result: apply.call(data.conf.controller, event, controllerArgs)
+					});
+				}.bind(this));
+			} else if (matchResult) {
 				conf = data.conf;
 				initConf = this.routes[data.path];
 			}
 			return true;
 		}, this);
+		if (asyncResult) return asyncResult;
 		if (!conf) return false;
 		this.lastRouteData.conf = initConf;
 		this.lastRouteData.result = apply.call(conf.controller, event, controllerArgs);
