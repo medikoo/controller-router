@@ -94,9 +94,10 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	}),
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
-		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller, result;
+		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller;
 		ensureObject(event);
 		path = ensureStringifiable(path);
+		this.lastRouteData = { event: event };
 		if (!path) return false;
 		if (path[0] === '/') path = path.slice(1);
 		if (endsWith.call(path, '/')) path = path.slice(0, -1);
@@ -105,49 +106,35 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		if (conf) {
 			initConf = this.routes[path || '/'];
 			controller = conf.controller || conf;
-			try {
-				result = apply.call(controller, event, controllerArgs);
-			} catch (e) {
-				e.conf = initConf;
-				e.event = event;
-				throw e;
-			}
-		} else {
-			pathTokens = path.split('/');
-			if (!this._dynamicRoutes[pathTokens.length]) return false;
-			this._dynamicRoutes[pathTokens.length].some(function (data) {
-				var args = [];
-				if (!data.tokens.every(function (token, index) {
-						var pathToken = pathTokens[index];
-						if (includes.call(data.matchPositions, index)) {
-							if (!token.test(pathToken)) return false;
-							args.push(pathToken);
-							return true;
-						}
-						return (token === pathToken);
-					})) {
-					return false;
-				}
-				if (data.conf.match.apply(event, args)) {
-					conf = data.conf;
-					initConf = this.routes[data.path];
-				}
-				return true;
-			}, this);
-			if (!conf) return false;
-			try {
-				result = apply.call(conf.controller, event, controllerArgs);
-			} catch (e) {
-				e.conf = initConf;
-				e.event = event;
-				throw e;
-			}
+			this.lastRouteData.conf =  initConf;
+			this.lastRouteData.result = apply.call(controller, event, controllerArgs);
+			return this.lastRouteData;
 		}
-		return {
-			conf: initConf,
-			event: event,
-			result: result
-		};
+		pathTokens = path.split('/');
+		if (!this._dynamicRoutes[pathTokens.length]) return false;
+		this._dynamicRoutes[pathTokens.length].some(function (data) {
+			var args = [];
+			if (!data.tokens.every(function (token, index) {
+					var pathToken = pathTokens[index];
+					if (includes.call(data.matchPositions, index)) {
+						if (!token.test(pathToken)) return false;
+						args.push(pathToken);
+						return true;
+					}
+					return (token === pathToken);
+				})) {
+				return false;
+			}
+			if (data.conf.match.apply(event, args)) {
+				conf = data.conf;
+				initConf = this.routes[data.path];
+			}
+			return true;
+		}, this);
+		if (!conf) return false;
+		this.lastRouteData.conf = initConf;
+		this.lastRouteData.result = apply.call(conf.controller, event, controllerArgs);
+		return this.lastRouteData;
 	}),
 	// Default prototype for an route event
 	_eventProto: d(Object.prototype)
