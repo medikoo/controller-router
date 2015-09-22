@@ -19,7 +19,8 @@ var includes             = require('es5-ext/array/#/contains')
   , ensurePath           = require('./lib/ensure-path')
 
   , push = Array.prototype.push, slice = Array.prototype.slice, apply = Function.prototype.apply
-  , create = Object.create, defineProperty = Object.defineProperty, stringify = JSON.stringify;
+  , create = Object.create, defineProperty = Object.defineProperty, stringify = JSON.stringify
+  , routeCallIdIndex = 0;
 
 var ControllerRouter = module.exports = Object.defineProperties(function (routes/*, options*/) {
 	var options;
@@ -96,7 +97,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
 		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller
-		  , asyncResult;
+		  , asyncResult, callId = ++routeCallIdIndex;
 		ensureObject(event);
 		path = ensureStringifiable(path);
 		this.lastRouteData = { event: event };
@@ -131,6 +132,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			if (isPromise(matchResult)) {
 				asyncResult = matchResult.then(function (isMatch) {
 					if (!isMatch) return false;
+					if (callId !== routeCallIdIndex) return false; // outdated
 					return (this.lastRouteData = {
 						event: event,
 						conf: this.routes[data.path],
