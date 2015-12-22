@@ -133,11 +133,12 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 				asyncResult = matchResult.then(function (isMatch) {
 					if (!isMatch) return false;
 					if (callId !== routeCallIdIndex) return false; // outdated
-					return (this.lastRouteData = {
+					this.lastRouteData = {
 						event: event,
-						conf: this.routes[data.path],
-						result: apply.call(data.conf.controller, event, controllerArgs)
-					});
+						conf: this.routes[data.path]
+					};
+					this.lastRouteData.result = apply.call(data.conf.controller, event, controllerArgs);
+					return this.lastRouteData;
 				}.bind(this));
 			} else if (matchResult) {
 				conf = data.conf;
