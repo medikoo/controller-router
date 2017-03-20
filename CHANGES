@@ -1,3 +1,8 @@
+v3.0.0  --  2017.03.20
+* Support asynchronous `match` (it may now return promise)
+* Do not try/catch eventual controller crashes (to avoid broken stack trace's).
+  Instead of on error, expose the route details on router instance
+
 v2.0.0  --  2015.06.25
 * Convert utility into more natural ControllerRouter class form
 * Improve specifity handling in dynamic routes resolution
