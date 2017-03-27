@@ -94,12 +94,14 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 });
 
 Object.defineProperties(ControllerRouter.prototype, assign({
+	_resolveResult: d(function (result) {
+		return this.Promise ? this.Promise.resolve(result) : result;
+	}),
 	// Routes path to controller
 	route: d(function (path/*, …controllerArgs*/) {
 		var args = [create(this._eventProto)], result;
 		push.apply(args, arguments);
-		result = this.routeEvent.apply(this, args);
-		return this.Promise ? this.Promise.resolve(result) : result;
+		return this.routeEvent.apply(this, args);
 	}),
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
@@ -113,7 +115,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		this.lastRouteData = { event: event };
 
 		// Do not proceed for no path
-		if (!path) return false;
+		if (!path) return this._resolveResult(false);
 
 		// Resolve path for route resolution
 		if (path[0] === '/') path = path.slice(1);
@@ -127,12 +129,12 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			controller = conf.controller || conf;
 			this.lastRouteData.conf =  initConf;
 			this.lastRouteData.result = apply.call(controller, event, controllerArgs);
-			return this.lastRouteData;
+			return this._resolveResult(this.lastRouteData);
 		}
 
 		// Handle eventual dynamic paths
 		pathTokens = path.split('/');
-		if (!this._dynamicRoutes[pathTokens.length]) return false;
+		if (!this._dynamicRoutes[pathTokens.length]) return this._resolveResult(false);
 		this._dynamicRoutes[pathTokens.length].some(function (data) {
 			var args = [], matchResult;
 
@@ -171,10 +173,10 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 
 		// If `match` is asynchronous return promise
 		if (asyncResult) return asyncResult;
-		if (!conf) return false;
+		if (!conf) return this._resolveResult(false);
 		this.lastRouteData.conf = initConf;
 		this.lastRouteData.result = apply.call(conf.controller, event, controllerArgs);
-		return this.lastRouteData;
+		return this._resolveResult(this.lastRouteData);
 	}),
 	// Default prototype for an route event
 	_eventProto: d(Object.prototype)
