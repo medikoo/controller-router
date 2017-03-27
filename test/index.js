@@ -133,7 +133,8 @@ module.exports = function (T, a) {
 	} }) });
 
 	var result = router.route('/');
-	a.deep(result, { name: 'promise', result: { conf: conf['/'], result: 'foo', event: result.result.event } });
+	a.deep(result, { name: 'promise',
+		result: { conf: conf['/'], result: 'foo', event: result.result.event } });
 	a.deep(called, ['root']);
 	clear.call(called);
 };

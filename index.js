@@ -99,7 +99,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	}),
 	// Routes path to controller
 	route: d(function (path/*, …controllerArgs*/) {
-		var args = [create(this._eventProto)], result;
+		var args = [create(this._eventProto)];
 		push.apply(args, arguments);
 		return this.routeEvent.apply(this, args);
 	}),
