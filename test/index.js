@@ -1,6 +1,7 @@
 'use strict';
 
-var clear = require('es5-ext/array/#/clear');
+var clear  = require('es5-ext/array/#/clear')
+  , assign = require('es5-ext/object/assign');
 
 module.exports = function (T, a) {
 	var called = [], obj = {}, conf, event = {}, router;
@@ -121,5 +122,18 @@ module.exports = function (T, a) {
 	a.deep(router.routeEvent(event, 'elo/trzy'),
 		{ conf: conf['elo/trzy'], result: undefined, event: event });
 	a.deep(called, ['elo/trzy']);
+	clear.call(called);
+
+	a.h1("Promise");
+	clear.call(called);
+	router = new T(conf = {
+		'/': function () { called.push('root'); return 'foo'; }
+	}, { promiseResultImplementation: assign(function () {}, { resolve: function (result) {
+		return { name: 'promise', result: result };
+	} }) });
+
+	var result = router.route('/');
+	a.deep(result, { name: 'promise', result: { conf: conf['/'], result: 'foo', event: result.result.event } });
+	a.deep(called, ['root']);
 	clear.call(called);
 };

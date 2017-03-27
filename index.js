@@ -6,6 +6,7 @@ var includes             = require('es5-ext/array/#/contains')
   , customError          = require('es5-ext/error/custom')
   , identity             = require('es5-ext/function/identity')
   , assign               = require('es5-ext/object/assign')
+  , ensureCallable       = require('es5-ext/object/valid-callable')
   , ensureObject         = require('es5-ext/object/valid-object')
   , ensureStringifiable  = require('es5-ext/object/validate-stringifiable-value')
   , forEach              = require('es5-ext/object/for-each')
@@ -51,6 +52,11 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 		this._dynamicRoutes[pathData.tokens.length].push(pathData);
 	}, this);
 	forEach(this._dynamicRoutes, function (data) { data.sort(compareDynamicRoutes); });
+
+	// Whether route should resolve with promise or not
+	if (options.promiseResultImplementation) {
+		defineProperty(this, 'Promise', d(ensureCallable(options.promiseResultImplementation)));
+	}
 }, {
 	// Validates provided routes map
 	ensureRoutes: d(function (routes) {
@@ -90,9 +96,10 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 Object.defineProperties(ControllerRouter.prototype, assign({
 	// Routes path to controller
 	route: d(function (path/*, …controllerArgs*/) {
-		var args = [create(this._eventProto)];
+		var args = [create(this._eventProto)], result;
 		push.apply(args, arguments);
-		return this.routeEvent.apply(this, args);
+		result = this.routeEvent.apply(this, args);
+		return this.Promise ? this.Promise.resolve(result) : result;
 	}),
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
