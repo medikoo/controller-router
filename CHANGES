@@ -1,3 +1,7 @@
+v3.1.0  --  2017.03.27
+* Introduce `promiseResultImplementation` option, thanks to which we can ensure consistent result
+  types
+
 v3.0.0  --  2017.03.20
 * Support asynchronous `match` (it may now return promise)
 * Do not try/catch eventual controller crashes (to avoid broken stack trace's).
