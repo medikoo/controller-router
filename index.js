@@ -98,13 +98,22 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
 		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller
 		  , asyncResult, callId = ++routeCallIdIndex;
+
 		ensureObject(event);
 		path = ensureStringifiable(path);
+
+		// Preprepare route date
 		this.lastRouteData = { event: event };
+
+		// Do not proceed for no path
 		if (!path) return false;
+
+		// Resolve path for route resolution
 		if (path[0] === '/') path = path.slice(1);
 		if (endsWith.call(path, '/')) path = path.slice(0, -1);
 		event.path = path || '/';
+
+		// Handle eventual static path
 		conf = this._staticRoutes[path || '/'];
 		if (conf) {
 			initConf = this.routes[path || '/'];
@@ -113,10 +122,14 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			this.lastRouteData.result = apply.call(controller, event, controllerArgs);
 			return this.lastRouteData;
 		}
+
+		// Handle eventual dynamic paths
 		pathTokens = path.split('/');
 		if (!this._dynamicRoutes[pathTokens.length]) return false;
 		this._dynamicRoutes[pathTokens.length].some(function (data) {
 			var args = [], matchResult;
+
+			// Check whether path matches
 			if (!data.tokens.every(function (token, index) {
 					var pathToken = pathTokens[index];
 					if (includes.call(data.matchPositions, index)) {
@@ -128,6 +141,8 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 				})) {
 				return false;
 			}
+
+			// Path matches, now resolve with `match` function
 			matchResult = data.conf.match.apply(event, args);
 			if (isPromise(matchResult)) {
 				asyncResult = matchResult.then(function (isMatch) {
@@ -146,6 +161,8 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			}
 			return true;
 		}, this);
+
+		// If `match` is asynchronous return promise
 		if (asyncResult) return asyncResult;
 		if (!conf) return false;
 		this.lastRouteData.conf = initConf;
