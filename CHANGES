@@ -1,3 +1,7 @@
+v3.2.0  --  2017.03.31
+* On overlapped async match calls, we cancel (reject) those shadowed instead of returning false
+  (this gave wrong message to higher level logic)
+
 v3.1.0  --  2017.03.27
 * Introduce `promiseResultImplementation` option, thanks to which we can ensure consistent result
   types
