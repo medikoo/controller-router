@@ -18,6 +18,7 @@
     "is-promise": "^2.1"
   },
   "devDependencies": {
+    "plain-promise": "^0.1.1",
     "tad": "^0.2.7",
     "xlint": "^0.2.2",
     "xlint-jslint-medikoo": "^0.1.4"

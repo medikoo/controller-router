@@ -1,9 +1,10 @@
 'use strict';
 
-var clear  = require('es5-ext/array/#/clear')
-  , assign = require('es5-ext/object/assign');
+var clear   = require('es5-ext/array/#/clear')
+  , assign  = require('es5-ext/object/assign')
+	, Promise = require('plain-promise');
 
-module.exports = function (T, a) {
+module.exports = function (T, a, d) {
 	var called = [], obj = {}, conf, event = {}, router;
 
 	a.h1("Ensure routes");
@@ -127,7 +128,18 @@ module.exports = function (T, a) {
 	a.h1("Promise");
 	clear.call(called);
 	router = new T(conf = {
-		'/': function () { called.push('root'); return 'foo'; }
+		'/': function () { called.push('root'); return 'foo'; },
+		'matched/[0-9]+': {
+			match: function (token) {
+				this.token = token;
+				return new Promise(function (resolve) {
+					setTimeout(function () { resolve(true); }, token);
+				});
+			},
+			controller: function () {
+				called.push(this.token);
+			}
+		}
 	}, { promiseResultImplementation: assign(function () {}, { resolve: function (result) {
 		return { name: 'promise', result: result };
 	} }) });
@@ -137,4 +149,14 @@ module.exports = function (T, a) {
 		result: { conf: conf['/'], result: 'foo', event: result.result.event } });
 	a.deep(called, ['root']);
 	clear.call(called);
+
+	var wasCalled = false;
+	router.route('/matched/50').done(a.never, function (err) {
+		wasCalled = true;
+		a(err.code, 'OUTDATED_ROUTE_CALL');
+	});
+	router.route('/matched/100').done(function () {
+			a(wasCalled, true);
+			d();
+	}, a.never);
 };

@@ -156,11 +156,14 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			if (isPromise(matchResult)) {
 				asyncResult = matchResult.then(function (isMatch) {
 					if (!isMatch) return false;
-					if (callId !== routeCallIdIndex) return false; // outdated
 					this.lastRouteData = {
 						event: event,
 						conf: this.routes[data.path]
 					};
+					if (callId !== routeCallIdIndex) {
+						// Cancel route (as promises are concerned we need to reject)
+						throw customError("Route cancelled, as next one took action", 'OUTDATED_ROUTE_CALL');
+					}
 					this.lastRouteData.result = apply.call(data.conf.controller, event, controllerArgs);
 					return this.lastRouteData;
 				}.bind(this));
