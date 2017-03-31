@@ -2,7 +2,7 @@
 
 var clear   = require('es5-ext/array/#/clear')
   , assign  = require('es5-ext/object/assign')
-	, Promise = require('plain-promise');
+  , Promise = require('plain-promise');
 
 module.exports = function (T, a, d) {
 	var called = [], obj = {}, conf, event = {}, router;
@@ -156,7 +156,7 @@ module.exports = function (T, a, d) {
 		a(err.code, 'OUTDATED_ROUTE_CALL');
 	});
 	router.route('/matched/100').done(function () {
-			a(wasCalled, true);
-			d();
+		a(wasCalled, true);
+		d();
 	}, a.never);
 };
