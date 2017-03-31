@@ -111,7 +111,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		ensureObject(event);
 		path = ensureStringifiable(path);
 
-		// Preprepare route date
+		// Preprepare route data
 		this.lastRouteData = { event: event };
 
 		// Do not proceed for no path
