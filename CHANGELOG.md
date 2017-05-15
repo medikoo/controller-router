@@ -9,3 +9,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * ensure wait for eventual promise resolution ([19ed04c](https://github.com/medikoo/controller-router/commit/19ed04c))
+
+## Old Changelog
+
+See `CHANGES`

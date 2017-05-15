@@ -1,3 +1,5 @@
+New changes are covered in CHANGELOG.md
+
 v3.2.0  --  2017.03.31
 * On overlapped async match calls, we cancel (reject) those shadowed instead of returning false
   (this gave wrong message to higher level logic)
