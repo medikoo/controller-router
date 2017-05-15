@@ -5,6 +5,7 @@
 var includes             = require('es5-ext/array/#/contains')
   , customError          = require('es5-ext/error/custom')
   , identity             = require('es5-ext/function/identity')
+  , constant             = require('es5-ext/function/constant')
   , assign               = require('es5-ext/object/assign')
   , ensureCallable       = require('es5-ext/object/valid-callable')
   , ensureObject         = require('es5-ext/object/valid-object')
@@ -95,6 +96,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 
 Object.defineProperties(ControllerRouter.prototype, assign({
 	_resolveResult: d(function (result) {
+		if (result && isPromise(result.result)) return result.result.then(constant(result));
 		return this.Promise ? this.Promise.resolve(result) : result;
 	}),
 	// Routes path to controller
@@ -165,7 +167,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 						throw customError("Route cancelled, as next one took action", 'OUTDATED_ROUTE_CALL');
 					}
 					this.lastRouteData.result = apply.call(data.conf.controller, event, controllerArgs);
-					return this.lastRouteData;
+					return this._resolveResult(this.lastRouteData);
 				}.bind(this));
 			} else if (matchResult) {
 				conf = data.conf;
