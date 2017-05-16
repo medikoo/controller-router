@@ -144,7 +144,8 @@ module.exports = function (T, a, d) {
 		return { name: 'promise', result: result };
 	} }) });
 
-	var result = router.route('/');
+	var route = router.route;
+	var result = route('/');
 	a.deep(result, { name: 'promise',
 		result: { conf: conf['/'], result: 'foo', event: result.result.event } });
 	a.deep(called, ['root']);

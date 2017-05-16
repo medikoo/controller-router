@@ -13,6 +13,7 @@ var includes             = require('es5-ext/array/#/contains')
   , forEach              = require('es5-ext/object/for-each')
   , endsWith             = require('es5-ext/string/#/ends-with')
   , d                    = require('d')
+  , autoBind             = require('d/auto-bind')
   , lazy                 = require('d/lazy')
   , isPromise            = require('is-promise')
   , compareDynamicRoutes = require('./lib/compare-dynamic-routes')
@@ -99,12 +100,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		if (result && isPromise(result.result)) return result.result.then(constant(result));
 		return this.Promise ? this.Promise.resolve(result) : result;
 	}),
-	// Routes path to controller
-	route: d(function (path/*, …controllerArgs*/) {
-		var args = [create(this._eventProto)];
-		push.apply(args, arguments);
-		return this.routeEvent.apply(this, args);
-	}),
+
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
 		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller
@@ -190,4 +186,11 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 	_dynamicRoutes: d(function () { return create(null); }),
 	// Internal map of static routes (no regexp tokens)
 	_staticRoutes: d(function () { return create(null); })
+}), autoBind({
+	// Routes path to controller
+	route: d(function (path/*, …controllerArgs*/) {
+		var args = [create(this._eventProto)];
+		push.apply(args, arguments);
+		return this.routeEvent.apply(this, args);
+	})
 })));
