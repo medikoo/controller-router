@@ -5,7 +5,6 @@
 var includes             = require('es5-ext/array/#/contains')
   , customError          = require('es5-ext/error/custom')
   , identity             = require('es5-ext/function/identity')
-  , constant             = require('es5-ext/function/constant')
   , assign               = require('es5-ext/object/assign')
   , ensureCallable       = require('es5-ext/object/valid-callable')
   , ensureObject         = require('es5-ext/object/valid-object')
@@ -97,10 +96,12 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 
 Object.defineProperties(ControllerRouter.prototype, assign({
 	_resolveResult: d(function (result) {
-		if (result && isPromise(result.result)) return result.result.then(resolvedResult => {
-			result.result = resolvedResult;
-			return result;
-		});
+		if (result && isPromise(result.result)) {
+			return result.result.then(function (resolvedResult) {
+				result.result = resolvedResult;
+				return result;
+			});
+		}
 		return this.Promise ? this.Promise.resolve(result) : result;
 	}),
 	_resolveController: d(function (fn) {
