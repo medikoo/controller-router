@@ -100,6 +100,18 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		if (result && isPromise(result.result)) return result.result.then(constant(result));
 		return this.Promise ? this.Promise.resolve(result) : result;
 	}),
+	_resolveController: d(function (fn) {
+		if (!this.Promise) {
+			this.lastRouteData.result = fn();
+		} else {
+			try {
+				this.lastRouteData.result = fn();
+			} catch (e) {
+				return this.Promise.reject(e);
+			}
+		}
+		return this._resolveResult(this.lastRouteData);
+	}),
 
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
@@ -126,8 +138,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 			initConf = this.routes[path || '/'];
 			controller = conf.controller || conf;
 			this.lastRouteData.conf =  initConf;
-			this.lastRouteData.result = apply.call(controller, event, controllerArgs);
-			return this._resolveResult(this.lastRouteData);
+			return this._resolveController(apply.bind(controller, event, controllerArgs));
 		}
 
 		// Handle eventual dynamic paths
@@ -176,8 +187,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		if (asyncResult) return asyncResult;
 		if (!conf) return this._resolveResult(false);
 		this.lastRouteData.conf = initConf;
-		this.lastRouteData.result = apply.call(conf.controller, event, controllerArgs);
-		return this._resolveResult(this.lastRouteData);
+		return this._resolveController(apply.bind(conf.controller, event, controllerArgs));
 	}),
 	// Default prototype for an route event
 	_eventProto: d(Object.prototype)
