@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.5.0"></a>
+# [3.5.0](https://github.com/medikoo/controller-router/compare/v3.4.1...v3.5.0) (2017-05-16)
+
+
+### Features
+
+* ensure to expose resolved result ([bd3bf16](https://github.com/medikoo/controller-router/commit/bd3bf16))
+
+
+
 <a name="3.4.1"></a>
 ## [3.4.1](https://github.com/medikoo/controller-router/compare/v3.4.0...v3.4.1) (2017-05-16)
 
