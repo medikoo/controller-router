@@ -117,6 +117,14 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		return this._resolveResult(this.lastRouteData);
 	}),
 
+	// Default prototype for an route event
+	_eventProto: d(Object.prototype)
+}, lazy({
+	// Internal map of dynamic routes (those that contain regexp tokens)
+	_dynamicRoutes: d(function () { return create(null); }),
+	// Internal map of static routes (no regexp tokens)
+	_staticRoutes: d(function () { return create(null); })
+}), autoBind({
 	// Routes path to controller and provides an event to be used for controller invocation
 	routeEvent: d(function (event, path/*, …controllerArgs*/) {
 		var pathTokens, controllerArgs = slice.call(arguments, 2), conf, initConf, controller
@@ -193,14 +201,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		this.lastRouteData.conf = initConf;
 		return this._resolveController(apply.bind(conf.controller, event, controllerArgs));
 	}),
-	// Default prototype for an route event
-	_eventProto: d(Object.prototype)
-}, lazy({
-	// Internal map of dynamic routes (those that contain regexp tokens)
-	_dynamicRoutes: d(function () { return create(null); }),
-	// Internal map of static routes (no regexp tokens)
-	_staticRoutes: d(function () { return create(null); })
-}), autoBind({
+
 	// Routes path to controller
 	route: d(function (path/*, …controllerArgs*/) {
 		var args = [create(this._eventProto)];
