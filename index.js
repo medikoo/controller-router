@@ -96,13 +96,14 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 
 Object.defineProperties(ControllerRouter.prototype, assign({
 	_resolveResult: d(function (result) {
+		var routeResult = result;
 		if (result && isPromise(result.result)) {
-			return result.result.then(function (resolvedResult) {
+			routeResult = result.result.then(function (resolvedResult) {
 				result.result = resolvedResult;
 				return result;
 			});
 		}
-		return this.Promise ? this.Promise.resolve(result) : result;
+		return this.Promise ? this.Promise.resolve(routeResult) : routeResult;
 	}),
 	_resolveController: d(function (fn) {
 		if (!this.Promise) {
