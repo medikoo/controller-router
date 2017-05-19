@@ -152,6 +152,7 @@ module.exports = function (T, a, d) {
 	clear.call(called);
 
 	var wasCalled = false;
+	router.Promise = Promise;
 	router.route('/matched/50').done(a.never, function (err) {
 		wasCalled = true;
 		a(err.code, 'OUTDATED_ROUTE_CALL');

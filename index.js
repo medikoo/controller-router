@@ -197,7 +197,7 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		}, this);
 
 		// If `match` is asynchronous return promise
-		if (asyncResult) return asyncResult;
+		if (asyncResult) return this.Promise ? this.Promise.resolve(asyncResult) : asyncResult;
 		if (!conf) return this._resolveResult(false);
 		this.lastRouteData.conf = initConf;
 		return this._resolveController(apply.bind(conf.controller, event, controllerArgs));
