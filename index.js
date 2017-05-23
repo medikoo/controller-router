@@ -32,10 +32,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	options = Object(arguments[1]);
 	this.constructor.ensureRoutes(routes, options);
 
-	if (options.eventProto != null) {
-		// Override default event prototype
-		defineProperty(this, '_eventProto', d(ensureObject(options.eventProto)));
-	}
+	defineProperty(this, '_eventProto', d((options.eventProto != null) ? ensureObject(options.eventProto) : {}));
 
 	defineProperty(this, 'routes', d(routes));
 
@@ -117,10 +114,8 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 			}
 		}
 		return this._resolveResult(this.lastRouteData);
-	}),
+	})
 
-	// Default prototype for an route event
-	_eventProto: d(Object.prototype)
 }, lazy({
 	// Internal map of dynamic routes (those that contain regexp tokens)
 	_dynamicRoutes: d(function () { return create(null); }),
