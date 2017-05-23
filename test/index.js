@@ -71,7 +71,10 @@ module.exports = function (T, a, d) {
 	a.deep(called, ['root']);
 	clear.call(called);
 
+	var emitted;
+	router.once('route:before', function (event) { emitted = event.path; });
 	a.deep(router.routeEvent(event, '/foo/'), { conf: conf.foo, result: undefined, event: event });
+	a(emitted, '/foo/');
 	a.deep(called, ['foo']);
 	clear.call(called);
 

@@ -11,6 +11,7 @@ var includes             = require('es5-ext/array/#/contains')
   , ensureStringifiable  = require('es5-ext/object/validate-stringifiable-value')
   , forEach              = require('es5-ext/object/for-each')
   , endsWith             = require('es5-ext/string/#/ends-with')
+  , ee                   = require('event-emitter')
   , d                    = require('d')
   , autoBind             = require('d/auto-bind')
   , lazy                 = require('d/lazy')
@@ -94,7 +95,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	normalizeRoutes: d(identity)
 });
 
-Object.defineProperties(ControllerRouter.prototype, assign({
+ee(Object.defineProperties(ControllerRouter.prototype, assign({
 	_resolveResult: d(function (result) {
 		var routeResult = result;
 		if (result && isPromise(result.result)) {
@@ -133,6 +134,8 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 
 		ensureObject(event);
 		path = ensureStringifiable(path);
+
+		this.emit("route:before", { event: event, path: path, args: controllerArgs });
 
 		// Preprepare route data
 		this.lastRouteData = { event: event };
@@ -209,4 +212,4 @@ Object.defineProperties(ControllerRouter.prototype, assign({
 		push.apply(args, arguments);
 		return this.routeEvent.apply(this, args);
 	})
-})));
+}))));
