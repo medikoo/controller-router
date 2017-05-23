@@ -32,7 +32,7 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	options = Object(arguments[1]);
 	this.constructor.ensureRoutes(routes, options);
 
-	defineProperty(this, '_eventProto', d((options.eventProto != null) ? ensureObject(options.eventProto) : {}));
+	defineProperty(this, 'eventProto', d((options.eventProto != null) ? ensureObject(options.eventProto) : {}));
 
 	defineProperty(this, 'routes', d(routes));
 
@@ -203,7 +203,7 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 
 	// Routes path to controller
 	route: d(function (path/*, …controllerArgs*/) {
-		var args = [create(this._eventProto)];
+		var args = [create(this.eventProto)];
 		push.apply(args, arguments);
 		return this.routeEvent.apply(this, args);
 	})
