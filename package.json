@@ -15,8 +15,7 @@
   "dependencies": {
     "d": "1",
     "es5-ext": "^0.10.21",
-    "event-emitter": "^0.3.5",
-    "is-promise": "^2.1"
+    "event-emitter": "^0.3.5"
   },
   "devDependencies": {
     "plain-promise": "^0.1.1",
