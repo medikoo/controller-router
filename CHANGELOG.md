@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.8.0"></a>
+# [3.8.0](https://github.com/medikoo/controller-router/compare/v3.7.1...v3.8.0) (2017-05-23)
+
+
+### Features
+
+* make router an emitter, emit route:before event ([86c37a9](https://github.com/medikoo/controller-router/commit/86c37a9))
+
+
+
 <a name="3.7.1"></a>
 ## [3.7.1](https://github.com/medikoo/controller-router/compare/v3.7.0...v3.7.1) (2017-05-19)
 
