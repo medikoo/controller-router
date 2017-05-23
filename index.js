@@ -32,7 +32,8 @@ var ControllerRouter = module.exports = Object.defineProperties(function (routes
 	options = Object(arguments[1]);
 	this.constructor.ensureRoutes(routes, options);
 
-	defineProperty(this, 'eventProto', d((options.eventProto != null) ? ensureObject(options.eventProto) : {}));
+	defineProperty(this, 'eventProto',
+		d((options.eventProto != null) ? ensureObject(options.eventProto) : {}));
 
 	defineProperty(this, 'routes', d(routes));
 
