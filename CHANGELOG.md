@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.9.3"></a>
+## [3.9.3](https://github.com/medikoo/controller-router/compare/v3.9.2...v3.9.3) (2017-05-24)
+
+
+### Bug Fixes
+
+* circular lastRouteData handling ([f2cd425](https://github.com/medikoo/controller-router/commit/f2cd425))
+
+
+
 <a name="3.9.2"></a>
 ## [3.9.2](https://github.com/medikoo/controller-router/compare/v3.9.1...v3.9.2) (2017-05-24)
 
