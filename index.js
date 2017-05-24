@@ -101,6 +101,7 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 				routeData.result = resolvedResult;
 				return routeData;
 			}, function (error) {
+				routeData.error = error;
 				error.routeData = routeData;
 				throw error;
 			});
@@ -114,6 +115,8 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 			try {
 				this.lastRouteData.result = fn();
 			} catch (e) {
+				this.lastRouteData.error = e;
+				e.routeData = this.lastRouteData;
 				return this.Promise.reject(e);
 			}
 		}
