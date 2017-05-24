@@ -100,6 +100,9 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 			routeResult = routeData.result.then(function (resolvedResult) {
 				routeData.result = resolvedResult;
 				return routeData;
+			}, function (error) {
+				error.routeData = routeData;
+				throw error;
 			});
 		}
 		return this.Promise ? this.Promise.resolve(routeResult) : routeResult;
