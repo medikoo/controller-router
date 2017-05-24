@@ -109,18 +109,21 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 		return this.Promise ? this.Promise.resolve(routeResult) : routeResult;
 	}),
 	_resolveController: d(function (fn) {
+		var routeData = this.lastRouteData;
 		if (!this.Promise) {
-			this.lastRouteData.result = fn();
+			routeData.result = fn();
 		} else {
 			try {
-				this.lastRouteData.result = fn();
+				routeData.result = fn();
+				this.lastRouteData = routeData;
 			} catch (e) {
-				this.lastRouteData.error = e;
-				e.routeData = this.lastRouteData;
+				this.lastRouteData = routeData;
+				routeData.error = e;
+				e.routeData = routeData;
 				return this.Promise.reject(e);
 			}
 		}
-		return this._resolveResult(this.lastRouteData);
+		return this._resolveResult(routeData);
 	})
 
 }, lazy({
