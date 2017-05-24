@@ -101,6 +101,7 @@ ee(Object.defineProperties(ControllerRouter.prototype, assign({
 				routeData.result = resolvedResult;
 				return routeData;
 			}, function (error) {
+				delete routeData.result;
 				routeData.error = error;
 				error.routeData = routeData;
 				throw error;
